@@ -9,4 +9,6 @@
     <string name="author">Penulis</string>
     <string name="year">Tahun Terbit</string>
     <string name="desc">Sinopsis</string>
+    <string name="share_message">Hello budies, I want to read $title right now!</string>
+    <string name="share_book">Bagikan</string>
 </resources>
