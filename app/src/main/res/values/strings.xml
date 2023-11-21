@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JetBukuku</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_library">Library</string>
+    <string name="menu_profile">Profile</string>
+    <string name="add_to_library">Tambah ke Daftar Baca</string>
+    <string name="back">Back</string>
+</resources>
