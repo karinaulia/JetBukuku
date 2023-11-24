@@ -1,5 +1,7 @@
 package com.bangkit.jetbukuku.ui.screen.home
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.jetbukuku.data.BookRepository
@@ -15,6 +17,9 @@ class HomeViewModel(private val repository: BookRepository): ViewModel() {
     val uiState: StateFlow<UiState<List<Book>>>
         get() = _uiState
 
+    private val _query = mutableStateOf("")
+    val query: State<String> get() = _query
+
     fun getAllBooks() {
         viewModelScope.launch {
             repository.getAllBooks()
@@ -26,4 +31,11 @@ class HomeViewModel(private val repository: BookRepository): ViewModel() {
                 }
         }
     }
+
+    fun search(newQuery: String) {
+        _query.value = newQuery
+        val searchResult = repository.searchBooks(_query.value).sortedBy { it.title }
+        _uiState.value = UiState.Success(searchResult)
+    }
+
 }
