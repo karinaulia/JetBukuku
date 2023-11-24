@@ -1,16 +1,21 @@
 package com.bangkit.jetbukuku.ui.screen.library
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,7 +30,6 @@ import com.bangkit.jetbukuku.R
 import com.bangkit.jetbukuku.di.Injection
 import com.bangkit.jetbukuku.model.Book
 import com.bangkit.jetbukuku.ui.common.UiState
-import com.bangkit.jetbukuku.ui.components.LibraryButton
 import com.bangkit.jetbukuku.ui.components.LibraryItem
 import com.bangkit.jetbukuku.ui.screen.ViewModelFactory
 
@@ -36,18 +40,20 @@ fun LibraryScreen(
             Injection.provideRepository()
         )
     ),
-    onLibraryButtonClicked: (String) -> Unit
+    onBackClick: () -> Unit,
 ) {
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
-            is UiState.Loading -> {}
+            is UiState.Loading -> {
+                viewModel.getAddedReadBooks()
+            }
             is UiState.Success -> {
                 LibraryBook(
                     uiState.data,
-                    onUpdateReadBook = { bookId, book ->
-                        viewModel.updateReadBook(bookId, book)
+                    onDeleteBook = {
+                        viewModel.updateReadBook(it)
                     },
-                    onLibraryButtonClicked = onLibraryButtonClicked
+                    onBackClick = onBackClick
                 )
             }
             is UiState.Error -> {}
@@ -58,19 +64,25 @@ fun LibraryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryBook(
-    book: Book,
-    onUpdateReadBook: (Long, Book) -> Unit,
-    onLibraryButtonClicked: (String) -> Unit,
+    book: List<Book>,
+    onDeleteBook: (Long) -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shareMessage = stringResource(
-        R.string.share_message,
-        book.title
-    )
     Column(
         modifier = modifier.fillMaxSize()
     ) {
         CenterAlignedTopAppBar(
+            navigationIcon = {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.back),
+                    modifier = modifier
+                        .padding(16.dp)
+                        .size(24.dp)
+                        .clickable { onBackClick() }
+                )
+            },
             title = {
                 Text(
                     text = stringResource(R.string.menu_library),
@@ -88,24 +100,16 @@ fun LibraryBook(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.weight(weight = 1f)
         ) {
-            items(items = listOf(book), key = { book.id }) {
+            items(items = book, key = { it.id }) {
                 LibraryItem(
-                    image = book.image,
-                    title = book.title,
-                    author = book.author,
-                    year = book.year,
+                    image = it.image,
+                    title = it.title,
+                    author = it.author,
+                    year = it.year,
+                    onDeleteBook = {onDeleteBook(it.id)}
                 )
                 Divider()
             }
         }
-        LibraryButton(
-            text = stringResource(R.string.share_book),
-            enabled = book != null,
-            onClick = {
-                onUpdateReadBook(book.id, book)
-                onLibraryButtonClicked(shareMessage)
-            },
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }

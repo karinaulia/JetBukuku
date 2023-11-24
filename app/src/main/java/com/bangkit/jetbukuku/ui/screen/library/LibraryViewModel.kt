@@ -10,33 +10,34 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LibraryViewModel(private val repository: BookRepository): ViewModel() {
-    private val _uiState: MutableStateFlow<UiState<Book>> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState<Book>>
+    private val _uiState: MutableStateFlow<UiState<List<Book>>> = MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState<List<Book>>>
         get() = _uiState
 
-    fun getAddedReadBooks(book: Book) {
+    fun getAddedReadBooks() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                repository.updateReadBook(book.id).collect { success ->
-                    if (success) {
-                        _uiState.value = UiState.Success(book)
-                    } else {
-                        _uiState.value = UiState.Error("Failed to update book in the library")
+                repository.getAddedReadBooks()
+                    .collect { books ->
+                        if (books.isNotEmpty()) {
+                            _uiState.value = UiState.Success(books)
+                        } else {
+                            _uiState.value = UiState.Error("No read books found")
+                        }
                     }
-                }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: "An error occurred")
             }
         }
     }
 
-    fun updateReadBook(bookId: Long, book: Book) {
+    fun updateReadBook(bookId: Long) {
         viewModelScope.launch {
             repository.updateReadBook(bookId)
                 .collect { isUpdated ->
                     if (isUpdated) {
-                        getAddedReadBooks(book)
+                        getAddedReadBooks()
                     }
                 }
         }
