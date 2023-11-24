@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -120,7 +121,7 @@ fun HomeContent(
             state = gridState,
             columns = GridCells.Adaptive(160.dp),
             contentPadding = PaddingValues(bottom = 80.dp),
-            modifier = modifier
+            modifier = modifier.testTag("BookList")
         ) {
             items(book) { data ->
                 BookItem(
