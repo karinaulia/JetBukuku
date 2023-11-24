@@ -7,4 +7,5 @@ data class Book(
     val author: String,
     val year: String,
     val desc: String,
+    val isRead: Boolean
 )

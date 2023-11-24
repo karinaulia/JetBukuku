@@ -6,7 +6,6 @@ import com.bangkit.jetbukuku.data.BookRepository
 import com.bangkit.jetbukuku.ui.screen.detail.DetailViewModel
 import com.bangkit.jetbukuku.ui.screen.home.HomeViewModel
 import com.bangkit.jetbukuku.ui.screen.library.LibraryViewModel
-import com.bangkit.jetbukuku.ui.screen.profile.ProfileViewModel
 
 class ViewModelFactory(private val repository: BookRepository) :
     ViewModelProvider.NewInstanceFactory() {
@@ -18,8 +17,6 @@ class ViewModelFactory(private val repository: BookRepository) :
             return DetailViewModel(repository) as T
         } else if (modelClass.isAssignableFrom(LibraryViewModel::class.java)) {
             return LibraryViewModel(repository) as T
-        } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            return ProfileViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

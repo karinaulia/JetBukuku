@@ -11,4 +11,8 @@
     <string name="desc">Sinopsis</string>
     <string name="share_message">Hello budies, I want to read $title right now!</string>
     <string name="share_book">Bagikan</string>
+    <string name="book_bukuku">Bukuku Library</string>
+    <string name="name">Karina Aulia Primanti Putri</string>
+    <string name="email">karinaauliaprimanti1412@gmail.com</string>
+    <string name="search_book">Cari Judul Buku</string>
 </resources>
